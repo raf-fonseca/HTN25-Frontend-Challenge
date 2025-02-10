@@ -1,9 +1,52 @@
 "use client";
 
 import { useState } from "react";
+import {
+  EventCard,
+  type TEvent,
+  type TEventType,
+} from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-export type TEventType = "workshop" | "activity" | "tech_talk";
+
+const mockEvents: TEvent[] = [
+  {
+    id: 1,
+    name: "Intro to React",
+    event_type: "workshop",
+    permission: "private",
+    start_time: Date.now() + 3600000,
+    end_time: Date.now() + 7200000,
+    description: "Learn the basics of React in this hands-on workshop.",
+    speakers: [{ name: "Jane Doe" }],
+    private_url: "https://example.com/react-workshop",
+    related_events: [],
+  },
+  {
+    id: 2,
+    name: "AI Ethics Panel",
+    event_type: "tech_talk",
+    permission: "public",
+    start_time: Date.now() + 10800000,
+    end_time: Date.now() + 14400000,
+    description: "Discussing the ethical implications of AI in today's world. ",
+    speakers: [{ name: "John Smith" }, { name: "Alice Johnson" }],
+    public_url: "https://example.com/ai-ethics-public",
+    private_url: "https://example.com/ai-ethics-private",
+    related_events: [1],
+  },
+  {
+    id: 3,
+    name: "Hackathon Kickoff",
+    event_type: "activity",
+    start_time: Date.now(),
+    end_time: Date.now() + 1800000,
+    description: "Get ready for 48 hours of coding and innovation!",
+    speakers: [{ name: "Bob Wilson" }],
+    private_url: "https://example.com/hackathon-kickoff",
+    related_events: [],
+  },
+];
 
 export function GridLayout() {
   const [filter, setFilter] = useState<TEventType | null>(null);
@@ -13,6 +56,10 @@ export function GridLayout() {
     setSelectedTab(newFilter);
     setFilter(newFilter);
   };
+
+  const filteredEvents = filter
+    ? mockEvents.filter((event) => event.event_type === filter)
+    : mockEvents;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -92,6 +139,31 @@ export function GridLayout() {
           </Button>
         </div>
       </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={filter || "all"}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.2 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {filteredEvents.map((event, index) => (
+            <motion.div
+              key={event.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.3,
+                delay: index * 0.1,
+                ease: [0.23, 1, 0.32, 1],
+              }}
+            >
+              <EventCard event={event} />
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
