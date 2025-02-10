@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, LogIn, LogOut, User } from "lucide-react";
+import { Search, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -41,7 +41,7 @@ export function Navbar() {
     <nav className="bg-background/80 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
-          <div className="w-[200px] flex items-center">
+          <div className="hidden sm:flex w-[200px] items-center">
             <Image
               src="https://hackthenorth.com/favicon.ico"
               alt="Hack the North Logo"
@@ -49,14 +49,14 @@ export function Navbar() {
               height={32}
             />
           </div>
-          <div className="flex-1 max-w-xl">
+          <div className="flex-1 max-w-xl w-full sm:w-auto ">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </div>
               <Input
                 id="search-input"
-                className="w-full pl-10 pr-16 py-2 bg-white/50 border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full pl-10 pr-16 py-2 bg-white/50 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 placeholder="Search events..."
                 type="search"
                 onFocus={handleSearchFocus}
@@ -69,22 +69,22 @@ export function Navbar() {
               </div>
             </div>
           </div>
-          <div className="w-[200px] flex justify-end font-semibold">
+          <div className="w-auto sm:w-[200px] flex justify-end font-semibold rounded-full">
             <Button
               variant="outline"
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 "
               onClick={() => setIsLoggedIn(!isLoggedIn)}
             >
               {isLoggedIn ? (
                 <>
-                  <User className="h-8 w-8" />
-                  <span>Log out</span>
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Log out</span>
                 </>
               ) : (
                 <>
                   <User className="h-4 w-4" />
-                  <span>Log in</span>
+                  <span className="hidden sm:inline">Log in</span>
                 </>
               )}
             </Button>
