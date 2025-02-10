@@ -7,6 +7,5 @@ export function GridLayout() {
         </div>
       ))}
     </div>
-  )
+  );
 }
-
