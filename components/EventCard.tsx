@@ -55,7 +55,7 @@ export function EventCard({ event }: { event: TEvent }) {
 
   return (
     <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-      <Card className="group hover:shadow-lg transition-all duration-300 border border-[1px] backdrop-blur-sm bg-gradient-to-br from-mint/30 to-blue-light/50 h-[300px] flex flex-col">
+      <Card className="group hover:shadow-lg transition-all duration-300 border border-[1px] backdrop-blur-sm bg-gradient-to-br from-mint/30 to-blue-light/50 h-[280px] flex flex-col">
         <CardHeader className="relative">
           <div className="absolute -top-2 -left-2 bg-white rounded-full p-2 shadow-md">
             {event.permission === "private" ? (
@@ -82,13 +82,13 @@ export function EventCard({ event }: { event: TEvent }) {
         <CardContent className="flex-1">
           {isRestricted ? (
             <div className="flex flex-col justify-center h-full">
-              <Lock className="h-8 w-8 mx-auto text-primary mb-4" />
+              <Lock className="h-5 w-5 mx-auto text-primary mb-4" />
               <p className="text-sm font-medium text-gray-600 text-center px-4">
                 Please login to view private event details
               </p>
             </div>
           ) : (
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col ">
               <div className="space-y-2">
                 <div className="flex items-center text-sm text-text-secondary">
                   <Clock className="mr-2 h-4 w-4 flex-shrink-0" />
@@ -103,9 +103,6 @@ export function EventCard({ event }: { event: TEvent }) {
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-text-secondary mt-4 line-clamp-2">
-                {event.description}
-              </p>
             </div>
           )}
         </CardContent>
@@ -134,22 +131,6 @@ export function EventCard({ event }: { event: TEvent }) {
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </a>
               </Button>
-              {event.public_url && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-text-secondary"
-                  asChild
-                >
-                  <a
-                    href={event.public_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Public Info
-                  </a>
-                </Button>
-              )}
             </>
           )}
         </CardFooter>
