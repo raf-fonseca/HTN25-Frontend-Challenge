@@ -8,53 +8,28 @@ import {
 } from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-
-const mockEvents: TEvent[] = [
-  {
-    id: 1,
-    name: "Intro to React",
-    event_type: "workshop",
-    permission: "private",
-    start_time: Date.now() + 3600000,
-    end_time: Date.now() + 7200000,
-    description: "Learn the basics of React in this hands-on workshop.",
-    speakers: [{ name: "Jane Doe" }],
-    private_url: "https://example.com/react-workshop",
-    related_events: [],
-  },
-  {
-    id: 2,
-    name: "AI Ethics Panel",
-    event_type: "tech_talk",
-    permission: "public",
-    start_time: Date.now() + 10800000,
-    end_time: Date.now() + 14400000,
-    description: "Discussing the ethical implications of AI in today's world. ",
-    speakers: [{ name: "John Smith" }, { name: "Alice Johnson" }],
-    public_url: "https://example.com/ai-ethics-public",
-    private_url: "https://example.com/ai-ethics-private",
-    related_events: [1],
-  },
-  {
-    id: 3,
-    name: "Hackathon Kickoff",
-    event_type: "activity",
-    start_time: Date.now(),
-    end_time: Date.now() + 1800000,
-    description: "Get ready for 48 hours of coding and innovation!",
-    speakers: [{ name: "Bob Wilson" }],
-    private_url: "https://example.com/hackathon-kickoff",
-    related_events: [],
-  },
-];
+import { mockEvents } from "@/lib/mock-data";
+import { EventDetailsSidebar } from "./EventSidebar";
 
 export function GridLayout() {
   const [filter, setFilter] = useState<TEventType | null>(null);
   const [selectedTab, setSelectedTab] = useState<TEventType | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<TEvent | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleFilterChange = (newFilter: TEventType | null) => {
     setSelectedTab(newFilter);
     setFilter(newFilter);
+  };
+
+  const handleEventClick = (clickedEvent: TEvent) => {
+    setSelectedEvent(clickedEvent);
+    setIsSidebarOpen(true);
+  };
+
+  const handleSidebarClose = () => {
+    setIsSidebarOpen(false);
+    // Optionally: setSelectedEvent(null);
   };
 
   const filteredEvents = filter
@@ -159,11 +134,20 @@ export function GridLayout() {
                 ease: [0.23, 1, 0.32, 1],
               }}
             >
-              <EventCard event={event} />
+              <EventCard
+                event={event as TEvent}
+                onEventClick={handleEventClick}
+              />
             </motion.div>
           ))}
         </motion.div>
       </AnimatePresence>
+      <EventDetailsSidebar
+        event={selectedEvent}
+        isOpen={isSidebarOpen}
+        onClose={handleSidebarClose}
+        allEvents={mockEvents as TEvent[]}
+      />
     </div>
   );
 }

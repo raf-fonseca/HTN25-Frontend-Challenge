@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { eventTypeStyles } from "@/app/types";
 
 export type TEventType = "workshop" | "activity" | "tech_talk";
 export type TPermission = "public" | "private";
@@ -32,13 +33,12 @@ export type TEvent = {
   related_events: number[];
 };
 
-const eventTypeStyles = {
-  workshop: "bg-mint/80 text-emerald-800",
-  activity: "bg-lavender/80 text-purple-800",
-  tech_talk: "bg-blue-light/80 text-blue-800",
-};
+interface EventCardProps {
+  event: TEvent;
+  onEventClick: (event: TEvent) => void;
+}
 
-export function EventCard({ event }: { event: TEvent }) {
+export function EventCard({ event, onEventClick }: EventCardProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const formatTime = (timestamp: number) => {
@@ -120,16 +120,10 @@ export function EventCard({ event }: { event: TEvent }) {
               <Button
                 className="bg-[#8B8FFF] hover:bg-[#7A7EFF] text-white transition-all duration-300 shadow-[0_0_0_0_rgba(139,143,255,0)] hover:shadow-[0_0_0_4px_rgba(139,143,255,0.1)]"
                 size="sm"
-                asChild
+                onClick={() => onEventClick(event)}
               >
-                <a
-                  href={event.private_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View Details
-                  <ExternalLink className="ml-2 h-4 w-4" />
-                </a>
+                View Details
+                <ExternalLink className="ml-2 h-4 w-4" />
               </Button>
             </>
           )}
