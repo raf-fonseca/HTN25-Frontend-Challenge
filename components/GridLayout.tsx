@@ -29,7 +29,11 @@ export function GridLayout() {
 
   const handleSidebarClose = () => {
     setIsSidebarOpen(false);
-    // Optionally: setSelectedEvent(null);
+    setSelectedEvent(null);
+  };
+
+  const handleRelatedEventClick = (relatedEvent: TEvent) => {
+    setSelectedEvent(relatedEvent);
   };
 
   const filteredEvents = filter
@@ -147,6 +151,7 @@ export function GridLayout() {
         isOpen={isSidebarOpen}
         onClose={handleSidebarClose}
         allEvents={mockEvents as TEvent[]}
+        onEventClick={handleRelatedEventClick}
       />
     </div>
   );

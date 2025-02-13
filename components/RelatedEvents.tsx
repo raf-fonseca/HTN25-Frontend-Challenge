@@ -1,5 +1,4 @@
-import { RelatedEventCard } from "./RelatedEventCard";
-import type { TEvent } from "./EventCard";
+import { EventCard, type TEvent } from "./EventCard";
 
 interface RelatedEventsProps {
   eventIds: number[];
@@ -19,13 +18,9 @@ export function RelatedEvents({
   return (
     <div className="mt-8">
       <h3 className="text-xl font-semibold mb-4">Related Events</h3>
-      <div className="grid gap-4">
+      <div className="flex flex-col space-y-6">
         {relatedEvents.map((event) => (
-          <RelatedEventCard
-            key={event.id}
-            event={event}
-            onEventClick={onEventClick}
-          />
+          <EventCard key={event.id} event={event} onEventClick={onEventClick} />
         ))}
       </div>
     </div>

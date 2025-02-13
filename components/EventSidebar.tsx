@@ -40,6 +40,7 @@ type EventDetailsSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
   allEvents: TEvent[];
+  onEventClick: (event: TEvent) => void;
 };
 
 export function EventDetailsSidebar({
@@ -47,6 +48,7 @@ export function EventDetailsSidebar({
   isOpen,
   onClose,
   allEvents,
+  onEventClick,
 }: EventDetailsSidebarProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [event, setEvent] = useState<TEvent | null>(initialEvent);
@@ -68,8 +70,6 @@ export function EventDetailsSidebar({
   }, [isOpen, onClose]);
 
   if (!event) return null;
-
-  const isRestricted = event.permission === "private" && !isLoggedIn;
 
   const formatTime = (timestamp: number) => {
     return new Date(timestamp).toLocaleString([], {
@@ -103,106 +103,92 @@ export function EventDetailsSidebar({
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed right-0 top-0 h-full w-full max-w-md bg-background shadow-xl z-50 overflow-y-auto"
           >
-            <Card className="h-full border-none rounded-none">
-              <CardHeader className="sticky top-0 z-50 bg-background pb-4 pt-6">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-4 top-4"
-                  onClick={onClose}
-                >
-                  <X className="h-6 w-6" />
-                </Button>
-                <div className="flex items-center space-x-4">
-                  <div
-                    className={`p-3 rounded-full ${
-                      eventTypeConfig[
-                        event.event_type as keyof typeof eventTypeConfig
-                      ].bgColor
-                    }`}
-                  >
-                    <EventTypeIcon
-                      className={`h-8 w-8 ${
-                        eventTypeConfig[
-                          event.event_type as keyof typeof eventTypeConfig
-                        ].color
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <Badge
-                      className={`font-medium mb-2 ${
-                        eventTypeStyles[event.event_type]
-                      }`}
+            <Card className="h-full border-none rounded-none flex flex-col">
+              <div className="sticky top-0 z-50">
+                <CardHeader className="bg-background/80 backdrop-blur-sm border-b border-gray-100 shadow-sm pb-4 pt-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#E2E3FF]/20 via-[#EDE4FF]/20 to-[#E2E3FF]/20" />
+                  <div className="relative z-10">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute -right-2 -top-2"
+                      onClick={onClose}
                     >
-                      {event.event_type.replace("_", " ")}
-                    </Badge>
-                    <CardTitle className="text-2xl font-bold">
-                      {event.name}
-                    </CardTitle>
+                      <X className="h-6 w-6" />
+                    </Button>
+                    <div className="flex items-center space-x-4">
+                      <div
+                        className={`p-3 rounded-full ${
+                          eventTypeConfig[
+                            event.event_type as keyof typeof eventTypeConfig
+                          ].bgColor
+                        }`}
+                      >
+                        <EventTypeIcon
+                          className={`h-8 w-8 ${
+                            eventTypeConfig[
+                              event.event_type as keyof typeof eventTypeConfig
+                            ].color
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <Badge
+                          className={`font-medium mb-2 ${
+                            eventTypeStyles[event.event_type]
+                          }`}
+                        >
+                          {event.event_type.replace("_", " ")}
+                        </Badge>
+                        <CardTitle className="text-2xl font-bold">
+                          {event.name}
+                        </CardTitle>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+              </div>
+              <CardContent className="pt-4 flex-1">
+                <div className="flex flex-col space-y-4 mb-6 text-gray-600">
+                  <div className="flex items-center">
+                    <Clock className="h-5 w-5 mr-2" />
+                    <span>{formatTime(event.start_time)}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Users className="h-5 w-5 mr-2" />
+                    <span>
+                      {event.speakers
+                        .map((speaker: any) => speaker.name)
+                        .join(", ")}
+                    </span>
                   </div>
                 </div>
-                {event.permission === "private" && (
-                  <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full flex items-center">
-                    <Lock className="h-3 w-3 mr-1" />
-                    Private
-                  </div>
-                )}
-              </CardHeader>
-              <CardContent className="pt-4">
-                {isRestricted ? (
-                  <div className="text-center py-12">
-                    <Lock className="h-24 w-24 mx-auto text-primary mb-4" />
-                    <p className="text-lg font-medium text-gray-600 mb-4">
-                      This is a private event
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex flex-col space-y-4 mb-6 text-gray-600">
-                      <div className="flex items-center">
-                        <Clock className="h-5 w-5 mr-2" />
-                        <span>{formatTime(event.start_time)}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Users className="h-5 w-5 mr-2" />
-                        <span>
-                          {event.speakers
-                            .map((speaker: any) => speaker.name)
-                            .join(", ")}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="prose max-w-none">
-                      <h3 className="text-xl font-semibold mb-2">
-                        About this event
-                      </h3>
-                      <p className="text-gray-700">{event.description}</p>
-                    </div>
-                    <RelatedEvents
-                      eventIds={event.related_events}
-                      events={allEvents}
-                      onEventClick={(relatedEvent) => {
-                        setEvent(relatedEvent);
-                        window.scrollTo(0, 0);
-                      }}
-                    />
-                  </>
-                )}
+                <div className="prose max-w-none">
+                  <h3 className="text-xl font-semibold mb-2">
+                    About this event
+                  </h3>
+                  <p className="text-gray-700">{event.description}</p>
+                </div>
+                <RelatedEvents
+                  eventIds={event.related_events}
+                  events={allEvents}
+                  onEventClick={onEventClick}
+                />
               </CardContent>
-              {!isRestricted && (
-                <CardFooter className="flex justify-between bg-gray-50 mt-6 sticky bottom-0">
+              <CardFooter className="flex justify-between pt-4 sticky bottom-0 bg-background/80 backdrop-blur-sm border-t border-gray-100 shadow-sm">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#E2E3FF]/20 via-[#EDE4FF]/20 to-[#E2E3FF]/20" />
+                <div className="relative z-10 flex w-full justify-between">
                   <Button
                     className="bg-[#8B8FFF] hover:bg-[#7A7EFF] text-white transition-all duration-300 shadow-md hover:shadow-lg"
                     size="lg"
                     asChild
                   >
                     <a
-                      href={event.private_url}
+                      href={event.public_url || event.private_url}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Join Event
+                      {event.public_url ? "View Video" : "Hacker Info"}
                       <ExternalLink className="ml-2 h-5 w-5" />
                     </a>
                   </Button>
@@ -214,16 +200,16 @@ export function EventDetailsSidebar({
                       asChild
                     >
                       <a
-                        href={event.public_url}
+                        href={event.private_url}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Public Info
+                        Hacker Info
                       </a>
                     </Button>
                   )}
-                </CardFooter>
-              )}
+                </div>
+              </CardFooter>
             </Card>
           </motion.div>
         </>
