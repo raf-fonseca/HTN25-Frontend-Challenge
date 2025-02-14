@@ -129,3 +129,45 @@ Fetches event data from the Hack The North API:
    npm run dev
    ```
 4. Open [http://localhost:3000](http://localhost:3000)
+
+## Write Up
+
+### Development Process
+
+I approached this project with a focus on user experience. After initial
+planning of the component architecture and user flows, I chose Next.js for its
+server-side rendering capabilities (useful for fetching data from the API),
+TypeScript for type safety, and Tailwind CSS for rapid UI development. The
+combination of Framer Motion and Shadcn UI allowed for polished animations and
+accessible components out of the box.
+
+During development, I encountered several challenges. Keeping authentication
+state was initially a concern, which I solved by implementing React Context for
+state management. Managing scroll behavior when the sidebar was open required a
+custom hook solution. Type safety across components was achieved by centralizing
+types and implementing proper error handling.
+
+I'm particularly proud of the clean component architecture, responsive design,
+and keyboard accessibility implementation. The separation of concerns and
+type-safe approach throughout the codebase ensures maintainability and
+scalability.
+
+### Future Extensions
+
+With additional time, I would:
+
+- Add user profiles through Clerk, linked to a database such as Supabase or
+  PostgreSQL
+- Add calendar integration
+- Add a comprehensive testing suite
+- Add proper analytics tracking to view event popularity
+
+The UX could be enhanced with dark mode support, and a proper authentication
+system would replace the current simple implementation.
+
+### Additional Thoughts
+
+While the current implementation provides a solid foundation, there's room for
+improvement in some areas. Accessibility could be enhanced with better ARIA
+labels and screen reader support and testing coverage could be expanded to
+ensure long-term reliability.
