@@ -41,9 +41,15 @@ export function GridLayout() {
     setSelectedEvent(relatedEvent);
   };
 
+  // Add this sorting function before filtering
+  const sortedEvents = [...mockEvents].sort(
+    (a, b) => a.start_time - b.start_time
+  );
+
+  // Update the filteredEvents to use sortedEvents
   const filteredEvents = filter
-    ? mockEvents.filter((event) => event.event_type === filter)
-    : mockEvents;
+    ? sortedEvents.filter((event) => event.event_type === filter)
+    : sortedEvents;
 
   return (
     <div className="container mx-auto px-4 py-8">
