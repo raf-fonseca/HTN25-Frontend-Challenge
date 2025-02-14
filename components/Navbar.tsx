@@ -5,10 +5,23 @@ import { Search, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { LoginModal } from "./LoginModal";
+import { toast } from "react-hot-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import dynamic from "next/dynamic";
+
+// Dynamic import with no SSR
+const LoginButton = dynamic(
+  () => import("./LoginButton").then((mod) => mod.LoginButton),
+  {
+    ssr: false,
+  }
+);
 
 export function Navbar() {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const handleSearchFocus = useCallback(() => {
     setIsSearchFocused(true);
@@ -36,6 +49,15 @@ export function Navbar() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
+
+  const handleLoginClick = () => {
+    if (isLoggedIn) {
+      setIsLoggedIn(false);
+      toast.success("Successfully logged out!");
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
 
   return (
     <nav className="bg-background/80 backdrop-blur-sm sticky top-0 z-10 border-b border-gray-100 shadow-sm">
@@ -70,27 +92,14 @@ export function Navbar() {
             </div>
           </div>
           <div className="w-auto sm:w-[200px] flex justify-end font-semibold rounded-full">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2 "
-              onClick={() => setIsLoggedIn(!isLoggedIn)}
-            >
-              {isLoggedIn ? (
-                <>
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">Log out</span>
-                </>
-              ) : (
-                <>
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">Log in</span>
-                </>
-              )}
-            </Button>
+            <LoginButton onClick={handleLoginClick} />
           </div>
         </div>
       </div>
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </nav>
   );
 }

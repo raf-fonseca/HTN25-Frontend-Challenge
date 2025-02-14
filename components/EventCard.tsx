@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,6 +13,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { eventTypeStyles } from "@/app/types";
+import { useAuth } from "@/contexts/AuthContext";
+import { LoginModal } from "@/components/LoginModal";
 
 export type TEventType = "workshop" | "activity" | "tech_talk";
 export type TPermission = "public" | "private";
@@ -39,7 +43,8 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onEventClick }: EventCardProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useAuth();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -108,13 +113,19 @@ export function EventCard({ event, onEventClick }: EventCardProps) {
         </CardContent>
         <CardFooter className="flex justify-between mt-auto">
           {isRestricted ? (
-            <Button
-              variant="outline"
-              onClick={() => setIsLoggedIn(true)}
-              className="w-full"
-            >
-              Log in to view
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                onClick={() => setIsLoginModalOpen(true)}
+                className="w-full"
+              >
+                Log in to view
+              </Button>
+              <LoginModal
+                isOpen={isLoginModalOpen}
+                onClose={() => setIsLoginModalOpen(false)}
+              />
+            </>
           ) : (
             <>
               <Button
@@ -132,3 +143,5 @@ export function EventCard({ event, onEventClick }: EventCardProps) {
     </motion.div>
   );
 }
+
+export default EventCard;

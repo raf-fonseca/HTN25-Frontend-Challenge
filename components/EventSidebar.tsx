@@ -24,6 +24,8 @@ import {
 import type { TEvent } from "./EventCard";
 import { RelatedEvents } from "./RelatedEvents";
 import { eventTypeStyles } from "@/app/types";
+import { LoginModal } from "./LoginModal";
+import { useAuth } from "@/contexts/AuthContext";
 
 const eventTypeConfig = {
   workshop: { icon: Wrench, color: "text-emerald-600", bgColor: "bg-mint" },
@@ -50,7 +52,7 @@ export function EventDetailsSidebar({
   allEvents,
   onEventClick,
 }: EventDetailsSidebarProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useAuth();
   const [event, setEvent] = useState<TEvent | null>(initialEvent);
 
   useEffect(() => {
@@ -101,7 +103,7 @@ export function EventDetailsSidebar({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-background shadow-xl z-50 overflow-y-auto"
+            className="fixed right-0 top-0 h-full w-full sm:w-[80%] md:w-[60%] lg:w-[45%] xl:w-[35%] bg-background shadow-xl z-50 overflow-y-auto"
           >
             <Card className="h-full border-none rounded-none flex flex-col">
               <div className="sticky top-0 z-50">
@@ -149,31 +151,37 @@ export function EventDetailsSidebar({
                 </CardHeader>
               </div>
               <CardContent className="pt-4 flex-1">
-                <div className="flex flex-col space-y-4 mb-6 text-gray-600">
-                  <div className="flex items-center">
-                    <Clock className="h-5 w-5 mr-2" />
-                    <span>{formatTime(event.start_time)}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Users className="h-5 w-5 mr-2" />
-                    <span>
-                      {event.speakers
-                        .map((speaker: any) => speaker.name)
-                        .join(", ")}
-                    </span>
-                  </div>
-                </div>
-                <div className="prose max-w-none">
-                  <h3 className="text-xl font-semibold mb-2">
-                    About this event
-                  </h3>
-                  <p className="text-gray-700">{event.description}</p>
-                </div>
-                <RelatedEvents
-                  eventIds={event.related_events}
-                  events={allEvents}
-                  onEventClick={onEventClick}
-                />
+                {event.permission === "private" && !isLoggedIn ? (
+                  <LoginModal isOpen={true} onClose={onClose} />
+                ) : (
+                  <>
+                    <div className="flex flex-col space-y-4 mb-6 text-gray-600">
+                      <div className="flex items-center">
+                        <Clock className="h-5 w-5 mr-2" />
+                        <span>{formatTime(event.start_time)}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Users className="h-5 w-5 mr-2" />
+                        <span>
+                          {event.speakers
+                            .map((speaker: any) => speaker.name)
+                            .join(", ")}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="prose max-w-none">
+                      <h3 className="text-xl font-semibold mb-2">
+                        About this event
+                      </h3>
+                      <p className="text-gray-700">{event.description}</p>
+                    </div>
+                    <RelatedEvents
+                      eventIds={event.related_events}
+                      events={allEvents}
+                      onEventClick={onEventClick}
+                    />
+                  </>
+                )}
               </CardContent>
               <CardFooter className="flex justify-between pt-4 sticky bottom-0 bg-background/80 backdrop-blur-sm border-t border-gray-100 shadow-sm">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#E2E3FF]/20 via-[#EDE4FF]/20 to-[#E2E3FF]/20" />

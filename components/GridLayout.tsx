@@ -1,17 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import {
-  EventCard,
-  type TEvent,
-  type TEventType,
-} from "@/components/EventCard";
+import { type TEvent, type TEventType } from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { mockEvents } from "@/lib/mock-data";
 import { EventDetailsSidebar } from "./EventSidebar";
+import { useAuth } from "@/contexts/AuthContext";
+import dynamic from "next/dynamic";
+
+// Dynamic import EventCard with no SSR
+const EventCard = dynamic(
+  () => import("./EventCard").then((mod) => mod.EventCard),
+  { ssr: false }
+);
 
 export function GridLayout() {
+  const { isLoggedIn } = useAuth();
   const [filter, setFilter] = useState<TEventType | null>(null);
   const [selectedTab, setSelectedTab] = useState<TEventType | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<TEvent | null>(null);
