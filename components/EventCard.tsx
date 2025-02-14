@@ -15,6 +15,7 @@ import {
 import { eventTypeStyles } from "@/app/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { LoginModal } from "@/components/LoginModal";
+import { formatEventTime } from "@/lib/utils";
 
 export type TEventType = "workshop" | "activity" | "tech_talk";
 export type TPermission = "public" | "private";
@@ -45,16 +46,6 @@ interface EventCardProps {
 export function EventCard({ event, onEventClick }: EventCardProps) {
   const { isLoggedIn } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
-  const formatTime = (timestamp: number) => {
-    const date = new Date(timestamp);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? "PM" : "AM";
-    const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes.toString().padStart(2, "0");
-    return `${formattedHours}:${formattedMinutes} ${ampm}`;
-  };
 
   const isRestricted = event.permission === "private" && !isLoggedIn;
 
@@ -93,21 +84,25 @@ export function EventCard({ event, onEventClick }: EventCardProps) {
               </p>
             </div>
           ) : (
-            <div className="h-full flex flex-col">
-              <div className="space-y-2">
+            <div className="h-full flex flex-col gap-1">
+              <div className="space-y-1">
+                <div className="text-sm text-text-secondary font-bold">
+                  {formatEventTime(event.start_time).date}
+                </div>
                 <div className="flex items-center text-sm text-text-secondary">
                   <Clock className="mr-2 h-4 w-4 flex-shrink-0" />
-                  {formatTime(event.start_time)} - {formatTime(event.end_time)}
+                  {formatEventTime(event.start_time).time} -{" "}
+                  {formatEventTime(event.end_time).time}
                 </div>
-                {event.speakers && event.speakers.length > 0 && (
-                  <div className="flex items-center text-sm text-text-secondary">
-                    <Users className="mr-2 h-4 w-4 flex-shrink-0" />
-                    <span className="line-clamp-1">
-                      {event.speakers.map((speaker) => speaker.name).join(", ")}
-                    </span>
-                  </div>
-                )}
               </div>
+              {event.speakers && event.speakers.length > 0 && (
+                <div className="flex items-center text-sm text-text-secondary">
+                  <Users className="mr-2 h-4 w-4 flex-shrink-0" />
+                  <span className="line-clamp-1">
+                    {event.speakers.map((speaker) => speaker.name).join(", ")}
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </CardContent>

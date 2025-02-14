@@ -26,6 +26,8 @@ import { RelatedEvents } from "./RelatedEvents";
 import { eventTypeStyles } from "@/app/types";
 import { LoginModal } from "./LoginModal";
 import { useAuth } from "@/contexts/AuthContext";
+import { formatEventTime } from "@/lib/utils";
+import { usePreventScroll } from "@/hooks/usePreventScroll";
 
 const eventTypeConfig = {
   workshop: { icon: Wrench, color: "text-emerald-600", bgColor: "bg-mint" },
@@ -55,6 +57,8 @@ export function EventDetailsSidebar({
   const { isLoggedIn } = useAuth();
   const [event, setEvent] = useState<TEvent | null>(initialEvent);
 
+  usePreventScroll(isOpen);
+
   useEffect(() => {
     setEvent(initialEvent);
   }, [initialEvent]);
@@ -72,17 +76,6 @@ export function EventDetailsSidebar({
   }, [isOpen, onClose]);
 
   if (!event) return null;
-
-  const formatTime = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString([], {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
 
   const EventTypeIcon =
     eventTypeConfig[event.event_type as keyof typeof eventTypeConfig].icon;
@@ -155,13 +148,20 @@ export function EventDetailsSidebar({
                   <LoginModal isOpen={true} onClose={onClose} />
                 ) : (
                   <>
-                    <div className="flex flex-col space-y-4 mb-6 text-gray-600">
-                      <div className="flex items-center">
-                        <Clock className="h-5 w-5 mr-2" />
-                        <span>{formatTime(event.start_time)}</span>
+                    <div className="flex flex-col space-y-2">
+                      <div className="space-y-2">
+                        <div className="text-xl font-bold text-gray-900">
+                          {formatEventTime(event.start_time).date}
+                        </div>
+                        <div className="flex items-center text-gray-600">
+                          <Clock className="h-5 w-5 mr-2" />
+                          {formatEventTime(event.start_time).time} -{" "}
+                          {formatEventTime(event.end_time).time}
+                        </div>
                       </div>
+
                       {event.speakers && event.speakers.length > 0 && (
-                        <div className="flex items-center">
+                        <div className="flex items-center text-gray-600">
                           <Users className="h-5 w-5 mr-2" />
                           <span>
                             {event.speakers
@@ -171,12 +171,13 @@ export function EventDetailsSidebar({
                         </div>
                       )}
                     </div>
-                    <div className="prose max-w-none">
+                    <div className="prose max-w-none mt-8">
                       <h3 className="text-xl font-semibold mb-2">
                         About this event
                       </h3>
                       <p className="text-gray-700">{event.description}</p>
                     </div>
+
                     <RelatedEvents
                       eventIds={event.related_events}
                       events={allEvents}
