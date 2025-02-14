@@ -7,7 +7,6 @@ import {
   Clock,
   Users,
   ExternalLink,
-  Lock,
   Wrench,
   Lightbulb,
   Rocket,
@@ -21,9 +20,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { TEvent } from "./EventCard";
 import { RelatedEvents } from "./RelatedEvents";
-import { eventTypeStyles } from "@/app/types";
+import { eventTypeStyles, TEvent } from "@/app/types";
 import { LoginModal } from "./LoginModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatEventTime } from "@/lib/utils";
@@ -38,6 +36,10 @@ const eventTypeConfig = {
   },
   activity: { icon: Rocket, color: "text-purple-600", bgColor: "bg-lavender" },
 };
+
+function getEventTypeConfig(eventType: keyof typeof eventTypeConfig) {
+  return eventTypeConfig[eventType];
+}
 
 type EventDetailsSidebarProps = {
   event: TEvent | null;
@@ -77,8 +79,10 @@ export function EventDetailsSidebar({
 
   if (!event) return null;
 
-  const EventTypeIcon =
-    eventTypeConfig[event.event_type as keyof typeof eventTypeConfig].icon;
+  const config = getEventTypeConfig(
+    event.event_type as keyof typeof eventTypeConfig
+  );
+  const EventTypeIcon = config.icon;
 
   return (
     <AnimatePresence>
@@ -112,20 +116,8 @@ export function EventDetailsSidebar({
                       <X className="h-6 w-6" />
                     </Button>
                     <div className="flex items-center space-x-4">
-                      <div
-                        className={`p-3 rounded-full ${
-                          eventTypeConfig[
-                            event.event_type as keyof typeof eventTypeConfig
-                          ].bgColor
-                        }`}
-                      >
-                        <EventTypeIcon
-                          className={`h-8 w-8 ${
-                            eventTypeConfig[
-                              event.event_type as keyof typeof eventTypeConfig
-                            ].color
-                          }`}
-                        />
+                      <div className={`p-3 rounded-full ${config.bgColor}`}>
+                        <EventTypeIcon className={`h-8 w-8 ${config.color}`} />
                       </div>
                       <div>
                         <Badge

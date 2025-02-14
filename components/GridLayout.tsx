@@ -1,15 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { type TEvent, type TEventType } from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { mockEvents } from "@/lib/mock-data";
 import { EventDetailsSidebar } from "./EventSidebar";
-import { useAuth } from "@/contexts/AuthContext";
 import dynamic from "next/dynamic";
-import { Input } from "@/components/ui/input";
 import { useSearch } from "@/contexts/SearchContext";
+import { TEventType, TEvent } from "@/app/types";
 
 // Dynamic import EventCard with no SSR
 const EventCard = dynamic(
@@ -22,7 +19,6 @@ interface GridLayoutProps {
 }
 
 export function GridLayout({ initialEvents }: GridLayoutProps) {
-  const { isLoggedIn } = useAuth();
   const { searchQuery } = useSearch();
   const [filter, setFilter] = useState<TEventType | null>(null);
   const [selectedTab, setSelectedTab] = useState<TEventType | null>(null);

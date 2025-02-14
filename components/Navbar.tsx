@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, User } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { LoginModal } from "./LoginModal";
 import { toast } from "react-hot-toast";
@@ -49,8 +48,7 @@ export function Navbar() {
         ) as HTMLInputElement;
         if (searchInput === document.activeElement) {
           searchInput.blur();
-          setSearchQuery(""); // Clear search when escaping
-          // searchInput.unfocus();
+          setSearchQuery("");
         }
       }
     },

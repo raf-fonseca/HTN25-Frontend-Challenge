@@ -1,4 +1,5 @@
-import { EventCard, type TEvent } from "./EventCard";
+import { EventCard } from "./EventCard";
+import type { TEvent } from "@/app/types";
 
 interface RelatedEventsProps {
   eventIds: number[];
