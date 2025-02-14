@@ -160,14 +160,16 @@ export function EventDetailsSidebar({
                         <Clock className="h-5 w-5 mr-2" />
                         <span>{formatTime(event.start_time)}</span>
                       </div>
-                      <div className="flex items-center">
-                        <Users className="h-5 w-5 mr-2" />
-                        <span>
-                          {event.speakers
-                            .map((speaker: any) => speaker.name)
-                            .join(", ")}
-                        </span>
-                      </div>
+                      {event.speakers && event.speakers.length > 0 && (
+                        <div className="flex items-center">
+                          <Users className="h-5 w-5 mr-2" />
+                          <span>
+                            {event.speakers
+                              .map((speaker) => speaker.name)
+                              .join(", ")}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div className="prose max-w-none">
                       <h3 className="text-xl font-semibold mb-2">

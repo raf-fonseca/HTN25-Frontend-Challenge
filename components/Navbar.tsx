@@ -33,17 +33,29 @@ export function Navbar() {
     setIsSearchFocused(false);
   }, []);
 
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-      event.preventDefault();
-      const searchInput = document.getElementById(
-        "search-input"
-      ) as HTMLInputElement;
-      if (searchInput) {
-        searchInput.focus();
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        const searchInput = document.getElementById(
+          "search-input"
+        ) as HTMLInputElement;
+        if (searchInput) {
+          searchInput.focus();
+        }
+      } else if (event.key === "Escape") {
+        const searchInput = document.getElementById(
+          "search-input"
+        ) as HTMLInputElement;
+        if (searchInput === document.activeElement) {
+          searchInput.blur();
+          setSearchQuery(""); // Clear search when escaping
+          // searchInput.unfocus();
+        }
       }
-    }
-  }, []);
+    },
+    [setSearchQuery]
+  );
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);

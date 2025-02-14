@@ -93,20 +93,20 @@ export function EventCard({ event, onEventClick }: EventCardProps) {
               </p>
             </div>
           ) : (
-            <div className="h-full flex flex-col ">
+            <div className="h-full flex flex-col">
               <div className="space-y-2">
                 <div className="flex items-center text-sm text-text-secondary">
                   <Clock className="mr-2 h-4 w-4 flex-shrink-0" />
                   {formatTime(event.start_time)} - {formatTime(event.end_time)}
                 </div>
-                <div className="flex items-center text-sm text-text-secondary">
-                  <Users className="mr-2 h-4 w-4 flex-shrink-0" />
-                  <span className="line-clamp-1">
-                    {event?.speakers
-                      ?.map((speaker) => speaker?.name)
-                      .join(", ")}
-                  </span>
-                </div>
+                {event.speakers && event.speakers.length > 0 && (
+                  <div className="flex items-center text-sm text-text-secondary">
+                    <Users className="mr-2 h-4 w-4 flex-shrink-0" />
+                    <span className="line-clamp-1">
+                      {event.speakers.map((speaker) => speaker.name).join(", ")}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           )}

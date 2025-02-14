@@ -17,7 +17,11 @@ const EventCard = dynamic(
   { ssr: false }
 );
 
-export function GridLayout() {
+interface GridLayoutProps {
+  initialEvents: TEvent[];
+}
+
+export function GridLayout({ initialEvents }: GridLayoutProps) {
   const { isLoggedIn } = useAuth();
   const { searchQuery } = useSearch();
   const [filter, setFilter] = useState<TEventType | null>(null);
@@ -44,8 +48,8 @@ export function GridLayout() {
     setSelectedEvent(relatedEvent);
   };
 
-  // Add search and sort before filtering
-  const sortedEvents = [...mockEvents].sort(
+  // Replace mockEvents with initialEvents
+  const sortedEvents = [...initialEvents].sort(
     (a, b) => a.start_time - b.start_time
   );
 
@@ -167,7 +171,7 @@ export function GridLayout() {
         event={selectedEvent}
         isOpen={isSidebarOpen}
         onClose={handleSidebarClose}
-        allEvents={mockEvents as TEvent[]}
+        allEvents={initialEvents as TEvent[]}
         onEventClick={handleRelatedEventClick}
       />
     </div>
