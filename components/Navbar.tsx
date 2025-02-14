@@ -9,6 +9,7 @@ import { LoginModal } from "./LoginModal";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import dynamic from "next/dynamic";
+import { useSearch } from "@/contexts/SearchContext";
 
 // Dynamic import with no SSR
 const LoginButton = dynamic(
@@ -22,6 +23,7 @@ export function Navbar() {
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const { searchQuery, setSearchQuery } = useSearch();
 
   const handleSearchFocus = useCallback(() => {
     setIsSearchFocused(true);
@@ -78,6 +80,8 @@ export function Navbar() {
               </div>
               <Input
                 id="search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-16 py-2 bg-white/50 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 placeholder="Search events..."
                 type="search"

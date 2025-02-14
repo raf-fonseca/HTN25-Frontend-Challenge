@@ -8,6 +8,8 @@ import { mockEvents } from "@/lib/mock-data";
 import { EventDetailsSidebar } from "./EventSidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import dynamic from "next/dynamic";
+import { Input } from "@/components/ui/input";
+import { useSearch } from "@/contexts/SearchContext";
 
 // Dynamic import EventCard with no SSR
 const EventCard = dynamic(
@@ -17,6 +19,7 @@ const EventCard = dynamic(
 
 export function GridLayout() {
   const { isLoggedIn } = useAuth();
+  const { searchQuery } = useSearch();
   const [filter, setFilter] = useState<TEventType | null>(null);
   const [selectedTab, setSelectedTab] = useState<TEventType | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<TEvent | null>(null);
@@ -41,15 +44,18 @@ export function GridLayout() {
     setSelectedEvent(relatedEvent);
   };
 
-  // Add this sorting function before filtering
+  // Add search and sort before filtering
   const sortedEvents = [...mockEvents].sort(
     (a, b) => a.start_time - b.start_time
   );
 
-  // Update the filteredEvents to use sortedEvents
-  const filteredEvents = filter
-    ? sortedEvents.filter((event) => event.event_type === filter)
-    : sortedEvents;
+  const searchedAndFilteredEvents = sortedEvents.filter((event) => {
+    const matchesSearch =
+      event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filter ? event.event_type === filter : true;
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -138,7 +144,7 @@ export function GridLayout() {
           transition={{ duration: 0.2 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {filteredEvents.map((event, index) => (
+          {searchedAndFilteredEvents.map((event, index) => (
             <motion.div
               key={event.id}
               initial={{ opacity: 0, y: 20 }}

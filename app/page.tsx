@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { Navbar } from "../components/Navbar"
-import { GridLayout } from "../components/GridLayout"
+import { Navbar } from "@/components/Navbar";
+import { GridLayout } from "@/components/GridLayout";
+import { SearchProvider } from "@/contexts/SearchContext";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
+    <SearchProvider>
       <main>
+        <Navbar />
         <GridLayout />
       </main>
-    </div>
-  )
+    </SearchProvider>
+  );
 }
-
