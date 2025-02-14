@@ -18,6 +18,7 @@ export default async function Home() {
     );
   } catch (error) {
     // Add proper error handling
+    console.error("Error fetching events:", error);
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p className="text-red-500">Failed to load events</p>

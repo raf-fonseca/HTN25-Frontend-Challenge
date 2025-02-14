@@ -20,17 +20,8 @@ const LoginButton = dynamic(
 
 export function Navbar() {
   const { isLoggedIn, setIsLoggedIn } = useAuth();
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const { searchQuery, setSearchQuery } = useSearch();
-
-  const handleSearchFocus = useCallback(() => {
-    setIsSearchFocused(true);
-  }, []);
-
-  const handleSearchBlur = useCallback(() => {
-    setIsSearchFocused(false);
-  }, []);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -95,8 +86,6 @@ export function Navbar() {
                 className="w-full pl-10 pr-16 py-2 bg-white/50 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 placeholder="Search events..."
                 type="search"
-                onFocus={handleSearchFocus}
-                onBlur={handleSearchBlur}
               />
               <div className="absolute inset-y-0 right-3 flex items-center">
                 <span className="text-xs text-gray-500 bg-secondary px-2 py-1 rounded-md font-medium">
