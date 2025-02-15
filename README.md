@@ -3,6 +3,8 @@
 A web application for managing and viewing Hack The North events. Built with
 Next.js, TypeScript, and Tailwind CSS.
 
+Live website: [htn25.rafaelsf.com](https://htn25.rafaelsf.com/)
+
 ## Features
 
 - 🔍 Real-time event search
